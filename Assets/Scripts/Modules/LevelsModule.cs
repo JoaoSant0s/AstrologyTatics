@@ -10,12 +10,9 @@ public class LevelsModule : ScriptableObject {
     }
 
     [SerializeField]
-    Transform charactersSet;
-
-    [SerializeField]
     List<LevelModule> levels;
 
-    public void DefineLevel() {
+    public void DefineLevel(GameObject charactersSet) {
 
         foreach (var level in levels) {
             level.DefineCharecterLevel(charactersSet);

@@ -12,8 +12,8 @@ public class DataCharactersData : MonoBehaviour {
         get { return instance; }
     }
 
-    public Character CharacterPrefab(CharacterDictionary.CharacterType type) {
-        return characterModule.CharactersTypeList.Find(x => x.Type == type).Module;
+    public CharacterDictionary CharacterPrefab(CharacterDictionary.CharacterType type) {
+        return characterModule.CharactersTypeList.Find(x => x.Type == type);
     }
 
     void Awake() {

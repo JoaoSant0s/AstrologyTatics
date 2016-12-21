@@ -9,6 +9,9 @@ public class GameController : MonoBehaviour {
     Vector3 cameraRotation;
 
     [SerializeField]
+    GameObject charactersSet;
+
+    [SerializeField]
     LevelsModule levelsModule;
 
     Camera mainCamera; 
@@ -23,7 +26,7 @@ public class GameController : MonoBehaviour {
     }
 
     void DefineLevel() {
-        levelsModule.DefineLevel();
+        levelsModule.DefineLevel(charactersSet);
     }
 
 

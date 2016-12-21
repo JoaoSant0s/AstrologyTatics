@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections.Generic;
+using Editor.Layout;
 
 public class DataCharactersModule : ScriptableObject {
 
@@ -14,7 +16,6 @@ public class DataCharactersModule : ScriptableObject {
 
 }
 
-
 [System.Serializable]
 public struct CharacterDictionary {
 
@@ -28,6 +29,9 @@ public struct CharacterDictionary {
     [SerializeField]
     Character module;
 
+    [Header("Layout Moviment")]
+    [SerializeField]
+    ArrayLayout layout;
 
     public CharacterType Type {
         get {
@@ -38,6 +42,12 @@ public struct CharacterDictionary {
     public Character Module {
         get {
             return module;
+        }
+    }
+
+    public ArrayLayout Layout {
+        get {
+            return layout;
         }
     }
 
