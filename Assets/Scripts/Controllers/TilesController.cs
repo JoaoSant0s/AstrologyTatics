@@ -18,13 +18,47 @@ public class TilesController : MonoBehaviour {
     [Range(5, 8)]
     int baseDistance;
 
-    List<Tile> tiles;    
+    List<Tile> tiles;
 
+    public List<Tile> Tiles {
+        get {
+            return tiles;
+        }
+    }
 
     void Awake() {
-        InitTiles();
+        Character.OnDefiningPaths += SelectPath;
+        Tile.OnClearTiles += ClearAllTiles;
 
+        InitTiles();
         if (OnDefiningCharacters != null) OnDefiningCharacters();
+    }
+
+    void OnDestroy() {
+        Character.OnDefiningPaths -= SelectPath;
+        Tile.OnClearTiles -= ClearAllTiles;
+    }
+
+    void SelectPath(Vector3 postionCharacter, List<Vector3> paths, bool activePaths) {
+        ClearAllTiles();
+
+        foreach (var path in paths) {
+            var currentTile = tiles.Find(tile => tile.GridPosition == (path + postionCharacter) );
+
+            if (currentTile != null) {
+                if (activePaths) {
+                    currentTile.ActiveAvaliableArea();
+                }
+            }else {
+                //Debug.LogError("Don't contains Tile!");
+            }
+        }
+    }
+
+    void ClearAllTiles() {
+        foreach (var tile in tiles) {
+            tile.DesactiveAvaliableArea();
+        }
     }
 
     void InitTiles() {

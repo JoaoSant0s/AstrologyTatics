@@ -29,7 +29,6 @@ public class GameController : MonoBehaviour {
         levelsModule.DefineLevel(charactersSet);
     }
 
-
     void SetCameraPosition() {
         mainCamera = Camera.main;
 

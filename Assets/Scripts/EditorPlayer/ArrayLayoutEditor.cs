@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using UnityEditor;
-
+using Common.Layout;
 namespace Editor.Layout {
 
     [CustomPropertyDrawer(typeof(ArrayLayout))]
     public class ArrayLayoutEditor : PropertyDrawer {
 
-        private const int height = 17;
         private const int width = 19;
+        private const int height = 17;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             EditorGUI.PrefixLabel(position, label);
@@ -28,12 +28,13 @@ namespace Editor.Layout {
 
                 newposition.width = position.width / width;
                 for (int i = row.arraySize - 1; i >= 0; i--) {
-
-                    if(width / 2 == j && height / 2 == i) {
-                        row.GetArrayElementAtIndex(i).boolValue = true;
-                    }
                     
-                    EditorGUI.PropertyField(newposition, row.GetArrayElementAtIndex(i), GUIContent.none);
+                    if (LayoutDefinition.LayoutCenter.x != j || LayoutDefinition.LayoutCenter.z != i) {                        
+                        EditorGUI.PropertyField(newposition, row.GetArrayElementAtIndex(i), GUIContent.none);
+                    } else {
+                        row.GetArrayElementAtIndex(i).boolValue = false;
+                    }
+
                     newposition.y += 18f;
                 }
 

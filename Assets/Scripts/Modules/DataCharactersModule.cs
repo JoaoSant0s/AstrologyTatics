@@ -20,7 +20,8 @@ public class DataCharactersModule : ScriptableObject {
 public struct CharacterDictionary {
 
     public enum CharacterType {
-        gemmini
+        gemmini,
+        aquarius
     }
 
     [SerializeField]
