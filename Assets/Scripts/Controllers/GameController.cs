@@ -8,25 +8,28 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     Vector3 cameraRotation;
 
-    [SerializeField]
-    GameObject charactersSet;
+    Camera mainCamera;
 
-    [SerializeField]
-    LevelsModule levelsModule;
-
-    Camera mainCamera; 
+    public static GameController instance;
     
+    public static GameController Instance {
+        get { return instance; }
+    }
+
+    private Character savedCharacter;
+
+    public Character SavedCharacter {
+        get {
+            return savedCharacter;
+        }
+        set {
+            savedCharacter= value;
+        }
+    }
+
     void Awake() {
+        instance = this;
         SetCameraPosition();
-        TilesController.OnDefiningCharacters += DefineLevel;
-    }
-
-    void OnDestroy() {
-        TilesController.OnDefiningCharacters -= DefineLevel;
-    }
-
-    void DefineLevel() {
-        levelsModule.DefineLevel(charactersSet);
     }
 
     void SetCameraPosition() {

@@ -11,38 +11,36 @@ public class Tile : MonoBehaviour {
     Material materialTile;
     bool activeArea;
 
-    Character savedCharacter;
-
     public Vector3 GridPosition {
         get {
             return gridPosition;
         }
     }
 
-    void Awake() {
-        Character.OnSaveCharacter += MoveCharacter;
+    public bool ActiveArea { get { return activeArea; } }
 
+    void Awake() {
         materialTile = transform.GetComponent<Renderer>().material;
         activeArea = false;
     }
 
-    void OnDestroy() {
-        Character.OnSaveCharacter -= MoveCharacter;
-    }
-
-    void MoveCharacter(Character character) {
-        savedCharacter = character;
-    }
-
-    void OnMouseDown() {
-        Debug.Log("Clicked: " + gridPosition);
+    internal void MoveCharacter() {
         if (!activeArea) return;
+        var savedCharacter = GameController.Instance.SavedCharacter;
+        GameController.Instance.SavedCharacter = null;
 
         if (savedCharacter != null) {
-            if (OnClearTiles != null) OnClearTiles();
+            if (OnClearTiles != null)
+                OnClearTiles();
+            //savedCharacter.transform.position = Vector3.Lerp(savedCharacter.transform.position, transform.position, 20 * Time.deltaTime);
             savedCharacter.transform.position = transform.position;
             savedCharacter.PostionCharacter = transform.position;
+            savedCharacter.ActivePaths = false;
         }
+    }
+
+    void OnMouseDown() {        
+        MoveCharacter();
     }
 
     void OnMouseEnter() {

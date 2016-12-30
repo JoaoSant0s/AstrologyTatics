@@ -14,7 +14,7 @@ namespace Common.Layout {
             get {
                 return layoutCenter;
             }
-        }        
+        }
 
         internal static Vector3 ConvertPostion(Vector3 position) {
             return position * multiplierBase;

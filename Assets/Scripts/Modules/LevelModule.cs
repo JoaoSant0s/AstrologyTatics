@@ -5,6 +5,9 @@ using Common.Layout;
 [System.Serializable]
 public class LevelModule {
 
+    public delegate void SaveCharacters(List<Character> characters);
+    public static event SaveCharacters OnSaveCharacters;
+
     [SerializeField]
     LevelsModule.Level level;
 
@@ -12,7 +15,8 @@ public class LevelModule {
     List<CharacterData> charactersLevel;
 
     public void DefineCharecterLevel(GameObject charactersSet) {
-
+        var listCharacters = new List<Character>();
+        
         foreach (var character in charactersLevel) {
             var characterData = DataCharactersData.Instance.CharacterPrefab(character.Type);
 
@@ -23,8 +27,10 @@ public class LevelModule {
             auxCharacter.PostionCharacter = position;
 
             auxCharacter.transform.SetParent(charactersSet.transform);
+            listCharacters.Add(auxCharacter);
         }
 
+        if (OnSaveCharacters != null) OnSaveCharacters(listCharacters);
     }
 
 }

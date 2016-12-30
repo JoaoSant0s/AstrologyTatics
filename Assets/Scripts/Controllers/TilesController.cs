@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Common.Layout;
 
 public class TilesController : MonoBehaviour {
 
@@ -28,6 +29,7 @@ public class TilesController : MonoBehaviour {
 
     void Awake() {
         Character.OnDefiningPaths += SelectPath;
+        Character.OnVerifyClick += VerifyCharacterTile;
         Tile.OnClearTiles += ClearAllTiles;
 
         InitTiles();
@@ -35,8 +37,13 @@ public class TilesController : MonoBehaviour {
     }
 
     void OnDestroy() {
+        Character.OnVerifyClick -= VerifyCharacterTile;
         Character.OnDefiningPaths -= SelectPath;
         Tile.OnClearTiles -= ClearAllTiles;
+    }
+
+    Tile VerifyCharacterTile(Vector3 position) {        
+        return tiles.Find(tile => tile.GridPosition == (position));        
     }
 
     void SelectPath(Vector3 postionCharacter, List<Vector3> paths, bool activePaths) {
