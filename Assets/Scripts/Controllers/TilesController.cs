@@ -4,9 +4,6 @@ using Common.Layout;
 
 public class TilesController : MonoBehaviour {
 
-    public delegate void DefiningCharacters();
-    public static event DefiningCharacters OnDefiningCharacters;
-
     [SerializeField]
     Tile tilePrefab;
 
@@ -33,7 +30,6 @@ public class TilesController : MonoBehaviour {
         Tile.OnClearTiles += ClearAllTiles;
 
         InitTiles();
-        if (OnDefiningCharacters != null) OnDefiningCharacters();
     }
 
     void OnDestroy() {

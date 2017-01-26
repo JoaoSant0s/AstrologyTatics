@@ -17,24 +17,22 @@ public class LevelsData : MonoBehaviour {
     List<Character> listCharacters;
 
     void Awake() {
-        TilesController.OnDefiningCharacters += DefineLevel;
-        LevelModule.OnSaveCharacters += SaveCharacters;
-        Character.OnBlockClick += UpdateCharactersPaths;
-        Character.OnRemoveCharacter += RemoveCharacter;
+        //CampaingUIController.OnDefiningPlayers += DefineLevel;
+        //Character.OnBlockClick += UpdateCharactersPaths;
+        //Character.OnRemoveCharacter += RemoveCharacter;
+        //LevelModule.OnSaveCharacters += SaveCharacters;
     }
 
     void OnDestroy() {
-        TilesController.OnDefiningCharacters -= DefineLevel;
-        LevelModule.OnSaveCharacters -= SaveCharacters;
-        Character.OnBlockClick -= UpdateCharactersPaths;
-        Character.OnRemoveCharacter -= RemoveCharacter;
+        //CampaingUIController.OnDefiningPlayers -= DefineLevel;
+        //Character.OnBlockClick -= UpdateCharactersPaths;
+        //Character.OnRemoveCharacter -= RemoveCharacter;
+        //LevelModule.OnSaveCharacters -= SaveCharacters;
     }
 
     bool UpdateCharactersPaths(Character player) {
         var listActive = listCharacters.FindAll(x => x != player && x.ActivePaths);
-
         if (listActive.Count > 0) return true;
-
         return false;
     }
 

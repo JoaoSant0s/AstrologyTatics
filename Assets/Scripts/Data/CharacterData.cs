@@ -7,7 +7,13 @@ public class CharacterData {
     [SerializeField]
     Vector3 position;
     [SerializeField]
+    int amount;
+    [SerializeField]
     CharacterDictionary.CharacterType type;
+
+    public int Amount {
+        get { return amount; }
+    }
 
     public Vector3 Position {
         get { return position; }

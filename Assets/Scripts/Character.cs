@@ -18,8 +18,6 @@ public class Character : MonoBehaviour {
     public delegate void RemoveCharacter(Character character);
     public static event RemoveCharacter OnRemoveCharacter;
 
-    
-
     private List<Vector3> paths;
     private Vector3 postionCharacter;
     bool activePaths;

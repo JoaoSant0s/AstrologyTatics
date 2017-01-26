@@ -13,11 +13,9 @@ public class LevelsModule : ScriptableObject {
     List<LevelModule> levels;
 
     public void DefineLevel(GameObject charactersSet) {
-
         foreach (var level in levels) {
             level.DefineCharecterLevel(charactersSet);
         }
-
     }
 
 }
