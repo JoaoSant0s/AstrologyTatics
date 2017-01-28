@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Common.Layout;
 
 public class PopupUIController : MonoBehaviour {
     [SerializeField]
@@ -18,30 +19,31 @@ public class PopupUIController : MonoBehaviour {
     }
 
     void PopDefinition(int turnNumber, Player currentPlayer, bool isNextTurn) {
-        if (isNextTurn) {
+        GameController.Instance.UserInteraction(false);
+        if (isNextTurn) {            
             StartCoroutine(NextTurnCourotine(turnNumber, currentPlayer.Name));           
         } else {
             StartCoroutine(TurnCourotine(turnNumber, currentPlayer.Name));
         }
     }
 
-
     IEnumerator NextTurnCourotine(int turnNumber, string playerName) {
         nextTurnUIController.UpdateTexts(turnNumber);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         nextTurnUIController.gameObject.SetActive(true);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         nextTurnUIController.gameObject.SetActive(false);
-
-        TurnCourotine(turnNumber, playerName);
+        StartCoroutine(TurnCourotine(turnNumber, playerName));
     }
 
     IEnumerator TurnCourotine(int turnNumber, string playerName) {
         turnUIController.UpdateTexts(turnNumber, playerName);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         turnUIController.gameObject.SetActive(true);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         turnUIController.gameObject.SetActive(false);
+
+        GameController.Instance.UserInteraction(true);
     }
 
 }

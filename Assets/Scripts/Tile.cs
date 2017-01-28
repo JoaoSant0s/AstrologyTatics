@@ -30,12 +30,11 @@ public class Tile : MonoBehaviour {
         GameController.Instance.SavedCharacter = null;
 
         if (savedCharacter != null) {
-            if (OnClearTiles != null)
-                OnClearTiles();
-            //savedCharacter.transform.position = Vector3.Lerp(savedCharacter.transform.position, transform.position, 20 * Time.deltaTime);
+            if (OnClearTiles != null) OnClearTiles();            
             savedCharacter.transform.position = transform.position;
             savedCharacter.PostionCharacter = transform.position;
-            savedCharacter.ActivePaths = false;
+            savedCharacter.ActivePaths = false;           
+            savedCharacter.UpdatePlayerMovement();
         }
     }
 

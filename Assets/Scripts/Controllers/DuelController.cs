@@ -30,17 +30,18 @@ public class DuelController : MonoBehaviour {
         CampaingUIController.OnDefiningPlayers += DefineLevel;
         Character.OnBlockClick += UpdateCharactersPaths;
         Character.OnRemoveCharacter += RemoveCharacter;
+        Player.OnUpdateTurn += NextTurn;
     }
 
     void OnDestroy() {
         CampaingUIController.OnDefiningPlayers -= DefineLevel;
         Character.OnBlockClick -= UpdateCharactersPaths;
         Character.OnRemoveCharacter += RemoveCharacter;
+        Player.OnUpdateTurn -= NextTurn;
     }
 
     void DefineLevel() {
-        foreach(var player in players) {
-            Debug.Log(player.Name);
+        foreach(var player in players) {            
             player.DefineCharacters(charactersSet);
         }       
     }
@@ -48,25 +49,36 @@ public class DuelController : MonoBehaviour {
     void Start() {
         GetCurrentPlayers();
         currentPlayer = players[nextTurnCounter];
+        turnCounter = INIT_COUNTER;
+        nextTurnCounter = INIT_NEXT_COUNTER;
+
+        OnPopupTurn(turnCounter, currentPlayer, false);
     }
 
     void NextTurn() {
         nextTurnCounter++;
         var auxNextTorn = turnCounter;
+        
         if (nextTurnCounter >= players.Count) {
             turnCounter++;
             nextTurnCounter = INIT_NEXT_COUNTER;
+            ClearMovements();           
         }
         currentPlayer = players[nextTurnCounter];
-
-        if (OnPopupTurn != null) OnPopupTurn(turnCounter, currentPlayer, auxNextTorn != turnCounter);                
+        
+        if (OnPopupTurn != null) OnPopupTurn(turnCounter, currentPlayer, auxNextTorn != turnCounter);
     }
 
-    bool UpdateCharactersPaths(Character player) {     
-        var containPlayer = currentPlayer.ListCharacters.Contains(player);
+    void ClearMovements() {
+        foreach(var player in players) {
+            foreach(var character in player.ListCharacters) {               
+                character.SetCharacterMovement(true);
+            }
+        }
+    }
 
-        Debug.Log(currentPlayer.Name + " " + containPlayer);
-        if (!containPlayer)
+    bool UpdateCharactersPaths(Character character) {            
+        if (character.Player != currentPlayer)
             return true;
 
         return false;

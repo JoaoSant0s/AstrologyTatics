@@ -21,9 +21,17 @@ public class Character : MonoBehaviour {
     private List<Vector3> paths;
     private Vector3 postionCharacter;
     bool activePaths;
+    bool characterMovement;
+    Player player;
 
     void Awake() {
+        characterMovement = true;
         activePaths = false;
+        GameController.OnDefiningUserInteraction += SetCharacterMovement;
+    }
+
+    void OnDestroy() {
+        GameController.OnDefiningUserInteraction -= SetCharacterMovement;
     }
 
     public List<Vector3> Paths {
@@ -31,6 +39,15 @@ public class Character : MonoBehaviour {
             return paths;
         }
     }
+
+    public bool GetCharacterMovement() {
+        return characterMovement;
+    }
+
+    public void SetCharacterMovement(bool value) {
+        characterMovement = value;       
+    }
+
 
     public bool ActivePaths {
         get {
@@ -41,12 +58,18 @@ public class Character : MonoBehaviour {
         }
     }
 
-    void OnMouseDown() {     
+    internal void UpdatePlayerMovement() {
+        characterMovement = false;
+        player.NextMovement();
+    }
+
+    void OnMouseDown() {        
+        if (!characterMovement) return;
 
         if (OnVerifyClick != null) {
             var currentTile = OnVerifyClick(postionCharacter);
                         
-            if (currentTile.ActiveArea) {
+            if (currentTile.ActiveArea) {                
                 currentTile.MoveCharacter();
                 if (OnRemoveCharacter != null) OnRemoveCharacter(this);                
                 return;
@@ -54,13 +77,25 @@ public class Character : MonoBehaviour {
         }
 
         if (OnBlockClick != null) {
-            if (OnBlockClick(this)) return;
+            if (OnBlockClick(this)) {
+                Debug.Log("Is not the current player");
+                return;
+            }
         }
 
         activePaths = !activePaths;
         if (OnDefiningPaths != null) OnDefiningPaths(postionCharacter, paths, activePaths);
 
         GameController.Instance.SavedCharacter = this;
+    }
+
+    internal Player Player {
+        get {
+            return player;
+        }
+        set {
+            player = value;
+        }      
     }
 
     internal void SetPaths(ArrayLayout layoutPaths) {
@@ -73,6 +108,10 @@ public class Character : MonoBehaviour {
         } set {
             postionCharacter = value;
         }
+    }
+
+    internal void UpdateColor() {
+        GetComponent<Renderer>().material.color = player.CurrentColor;
     }
 
 }

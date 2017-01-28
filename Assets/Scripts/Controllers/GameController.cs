@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class GameController : MonoBehaviour {
+
+    public delegate void DefiningUserInteraction(bool interactive);
+    public static event DefiningUserInteraction OnDefiningUserInteraction;
 
     [SerializeField]
     Vector3 cameraPosition;
@@ -25,6 +29,10 @@ public class GameController : MonoBehaviour {
         set {
             savedCharacter= value;
         }
+    }
+
+    internal void UserInteraction(bool interactive) {
+        if (OnDefiningUserInteraction != null) OnDefiningUserInteraction(interactive);
     }
 
     void Awake() {
