@@ -27,6 +27,7 @@ public class TilesController : MonoBehaviour {
     void Awake() {
         Character.OnDefiningPaths += SelectPath;
         Character.OnVerifyClick += VerifyCharacterTile;
+        Character.OnClearAllTiles += ClearAllTiles;
         Tile.OnClearTiles += ClearAllTiles;
 
         InitTiles();
@@ -35,6 +36,7 @@ public class TilesController : MonoBehaviour {
     void OnDestroy() {
         Character.OnVerifyClick -= VerifyCharacterTile;
         Character.OnDefiningPaths -= SelectPath;
+        Character.OnClearAllTiles -= ClearAllTiles;
         Tile.OnClearTiles -= ClearAllTiles;
     }
 
@@ -52,8 +54,6 @@ public class TilesController : MonoBehaviour {
                 if (activePaths) {
                     currentTile.ActiveAvaliableArea();
                 }
-            }else {
-                //Debug.LogError("Don't contains Tile!");
             }
         }
     }

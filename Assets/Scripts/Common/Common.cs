@@ -8,7 +8,8 @@ namespace Common.Layout {
         public enum ColorKeyList {
             red,
             green,
-            blue
+            blue,
+            yellow
         }
 
         public static Color GetColor(ColorKey.ColorKeyList colorEnum) {
@@ -22,6 +23,9 @@ namespace Common.Layout {
                     break;
                 case ColorKey.ColorKeyList.blue:
                     auxColor = Color.blue;
+                    break;
+                case ColorKey.ColorKeyList.yellow:
+                    auxColor = Color.yellow;
                     break;
             }
 

@@ -7,10 +7,13 @@ using System;
 public class Character : MonoBehaviour {
 
     public delegate void DefiningPaths(Vector3 postionTile, List<Vector3> paths, bool activePaths);
-    public static event DefiningPaths OnDefiningPaths;    
+    public static event DefiningPaths OnDefiningPaths;
 
-    public delegate bool BlockClick(Character character);
-    public static event BlockClick OnBlockClick;
+    public delegate Player PlayerDuel();
+    public static event PlayerDuel OnPlayerDuel;
+
+    public delegate void ClearAllTiles();
+    public static event ClearAllTiles OnClearAllTiles;
 
     public delegate Tile VerifyClick(Vector3 postionCharacter);
     public static event VerifyClick OnVerifyClick;
@@ -63,30 +66,46 @@ public class Character : MonoBehaviour {
         player.NextMovement();
     }
 
-    void OnMouseDown() {        
-        if (!characterMovement) return;
-
-        if (OnVerifyClick != null) {
-            var currentTile = OnVerifyClick(postionCharacter);
-                        
-            if (currentTile.ActiveArea) {                
-                currentTile.MoveCharacter();
-                if (OnRemoveCharacter != null) OnRemoveCharacter(this);                
-                return;
-            }            
+    void OnMouseDown() {
+        Player currentPlayerDuel = null;
+        if (OnPlayerDuel != null) {
+            currentPlayerDuel = OnPlayerDuel();
         }
 
-        if (OnBlockClick != null) {
-            if (OnBlockClick(this)) {
-                Debug.Log("Is not the current player");
+        if (currentPlayerDuel == null) return;        
+
+        if(GameController.Instance.SavedCharacter == null) {
+            if (!characterMovement) return;
+            if (currentPlayerDuel == player) {
+                activePaths = true;
+                GameController.Instance.SavedCharacter = this;
+                if (OnDefiningPaths != null) OnDefiningPaths(postionCharacter, paths, activePaths);
+            } else {
+                Debug.Log("Is not the current player!");
                 return;
             }
-        }
-
-        activePaths = !activePaths;
-        if (OnDefiningPaths != null) OnDefiningPaths(postionCharacter, paths, activePaths);
-
-        GameController.Instance.SavedCharacter = this;
+        }else {
+            if (currentPlayerDuel == player) {
+                if (GameController.Instance.SavedCharacter == this) {
+                    activePaths = false;
+                    GameController.Instance.SavedCharacter = null;
+                    if (OnClearAllTiles != null) OnClearAllTiles();
+                } else {
+                    Debug.Log("Don't have friendly fire!");
+                    return;
+                }
+            } else {
+                if (OnVerifyClick != null) {
+                    var currentTile = OnVerifyClick(postionCharacter);
+                    if (currentTile.ActiveArea) {
+                        currentTile.MoveCharacter();
+                        if (OnRemoveCharacter != null) OnRemoveCharacter(this);
+                    } else {
+                        Debug.Log("Is not in fight zone");
+                    }
+                }
+            }
+        }       
     }
 
     internal Player Player {

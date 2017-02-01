@@ -74,7 +74,8 @@ public class Player {
         }
     }
 
-    internal void NextMovement() {        
+    internal void NextMovement() {
+        Debug.Log(listCharacters.Count);      
         if (turnNumberController >= listCharacters.Count) {
             turnNumberController = 1;
             if (OnUpdateTurn != null) OnUpdateTurn();
@@ -83,9 +84,12 @@ public class Player {
         }        
     }
 
-    internal void RemoveCharacter(Character currentCharacter) {
-        listCharacters.Remove(currentCharacter);
-        GameObject.DestroyObject(currentCharacter.gameObject);
+    internal bool RemoveCharacter(Character currentCharacter) {
+        if(listCharacters.Contains(currentCharacter)) {
+            listCharacters.Remove(currentCharacter);
+            return true;
+        }
+        return false;
     }
 
     public override string ToString() {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Common.Layout;
 
 public class DuelController : MonoBehaviour {
 
@@ -28,16 +29,21 @@ public class DuelController : MonoBehaviour {
     }
     void Awake() {
         CampaingUIController.OnDefiningPlayers += DefineLevel;
-        Character.OnBlockClick += UpdateCharactersPaths;
         Character.OnRemoveCharacter += RemoveCharacter;
+        Character.OnPlayerDuel += GetCurrentPlayer;
         Player.OnUpdateTurn += NextTurn;
+
     }
 
     void OnDestroy() {
         CampaingUIController.OnDefiningPlayers -= DefineLevel;
-        Character.OnBlockClick -= UpdateCharactersPaths;
-        Character.OnRemoveCharacter += RemoveCharacter;
+        Character.OnRemoveCharacter -= RemoveCharacter;
+        Character.OnPlayerDuel -= GetCurrentPlayer;
         Player.OnUpdateTurn -= NextTurn;
+    }
+
+    Player GetCurrentPlayer() {
+        return currentPlayer;
     }
 
     void DefineLevel() {
@@ -77,17 +83,12 @@ public class DuelController : MonoBehaviour {
         }
     }
 
-    bool UpdateCharactersPaths(Character character) {            
-        if (character.Player != currentPlayer)
-            return true;
-
-        return false;
-    }
-
     internal void RemoveCharacter(Character currentCharacter) {
-        currentPlayer.RemoveCharacter(currentCharacter);      
+        foreach (var item in players) {
+            if (item.RemoveCharacter(currentCharacter)) {
+                break;
+            }
+        }        
+        GameObject.DestroyObject(currentCharacter.gameObject);
     }
-
-
-
 }
