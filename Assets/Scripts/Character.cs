@@ -26,6 +26,16 @@ public class Character : MonoBehaviour {
     bool activePaths;
     bool characterMovement;
     Player player;
+    CharacterDictionary.CharacterType type;
+
+    public CharacterDictionary.CharacterType Type {
+        get {
+            return type;
+        }
+        set {
+            type = value;
+        }
+    }
 
     void Awake() {
         characterMovement = true;

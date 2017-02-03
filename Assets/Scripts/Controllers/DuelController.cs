@@ -20,14 +20,25 @@ public class DuelController : MonoBehaviour {
     int nextTurnCounter;
     List<Player> players;
 
-    List<Player> GetCurrentPlayers() {
+    public List<Player> Players {
+        get {
+            return players;
+        }
+    }
+    public static DuelController instance;
+
+    public static DuelController Instance {
+        get { return instance; }
+    }
+
+    void GetCurrentPlayers() {
         if (OnDefinedPlayers != null) players = OnDefinedPlayers();        
 
-        if (players == null) Debug.LogError("Don't have players");
-
-        return players;
+        if (players == null) Debug.LogError("Don't have players");        
     }
+
     void Awake() {
+        instance = this;
         CampaingUIController.OnDefiningPlayers += DefineLevel;
         Character.OnRemoveCharacter += RemoveCharacter;
         Character.OnPlayerDuel += GetCurrentPlayer;
@@ -46,8 +57,11 @@ public class DuelController : MonoBehaviour {
         return currentPlayer;
     }
 
-    void DefineLevel() {
-        foreach(var player in players) {            
+    void DefineLevel(List<Vector2> elements) {
+        Player humanPlayer = players.Find(x => x.Type == Player.TypePlayer.human);
+        humanPlayer.SetLimitElements(elements);        
+        
+        foreach (var player in players) {            
             player.DefineCharacters(charactersSet);
         }       
     }

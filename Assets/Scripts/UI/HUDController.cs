@@ -5,7 +5,7 @@ class HUDController : MonoBehaviour {
 
     const string info = "Turno: {0}; \nPlayer: {1}";
     [SerializeField]
-    [Multiline]
+    
     Text turnInfo;
 
     void Start() {

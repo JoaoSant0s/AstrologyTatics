@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Common.Layout;
+using System;
 
 [System.Serializable]
 public class Player {
@@ -26,8 +27,14 @@ public class Player {
     List<CharacterData> listCharactersData;
 
     List<Character> listCharacters;
+    List<Vector2> elementsSelected;
     int turnNumberController;    
 
+    public TypePlayer Type {
+        get {
+            return type;
+        }
+    }
     public Color CurrentColor {
         get {
             return ColorKey.GetColor(currentColor);
@@ -52,11 +59,26 @@ public class Player {
         }
     }
 
-    internal void DefineCharacters(GameObject charactersSet) {
+    public void SetLimitElements(List<Vector2> elements) {
+        elementsSelected = elements;
+    }
+
+    public void DefineCharacters(GameObject charactersSet) {
         listCharacters = new List<Character>();
         turnNumberController = 1;
 
+        Debug.Log(elementsSelected.Count);
+
         foreach (var auxCharacter in listCharactersData) {
+            
+            if (elementsSelected.Count > 0) {
+                var auxCharac = elementsSelected.Find(element => element.x == (int)auxCharacter.Type);
+                elementsSelected.Remove(auxCharac);
+                Debug.Log(auxCharac);
+                if (auxCharac.y <= 0) continue;
+                auxCharac -= (new Vector2(0, 1));
+                elementsSelected.Add(auxCharac);
+            }
             var characterData = DataCharactersData.Instance.CharacterPrefab(auxCharacter.Type);
 
             Vector3 position = LayoutDefinition.ConvertPostion(auxCharacter.Position);
@@ -65,6 +87,7 @@ public class Player {
             character.name += " " + name;
 
             character.SetPaths(characterData.Layout);
+            character.Type = auxCharacter.Type;
             character.Player = this;
             character.PostionCharacter = position;
             character.UpdateColor();
@@ -74,7 +97,9 @@ public class Player {
         }
     }
 
-    internal void NextMovement() {
+   
+
+    public void NextMovement() {
         Debug.Log(listCharacters.Count);      
         if (turnNumberController >= listCharacters.Count) {
             turnNumberController = 1;
@@ -84,7 +109,7 @@ public class Player {
         }        
     }
 
-    internal bool RemoveCharacter(Character currentCharacter) {
+    public bool RemoveCharacter(Character currentCharacter) {
         if(listCharacters.Contains(currentCharacter)) {
             listCharacters.Remove(currentCharacter);
             return true;

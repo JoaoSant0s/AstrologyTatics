@@ -12,11 +12,13 @@ public class UIController : MonoBehaviour {
     void Awake() {
         MenuUIController.OnActiveCampaing += ActiveCampaing;
         CampaingUIController.OnActiveMenu += ActiveMenu;
+        PauseController.OnActiveMenu += ActiveMenu;
     }
 
     void OnDestroy() {
         MenuUIController.OnActiveCampaing -= ActiveCampaing;
         CampaingUIController.OnActiveMenu -= ActiveMenu;
+        PauseController.OnActiveMenu -= ActiveMenu;
     }
 
     void ActiveCampaing(bool active) {

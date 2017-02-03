@@ -7,15 +7,28 @@ public class GameController : MonoBehaviour {
     public delegate void DefiningUserInteraction(bool interactive);
     public static event DefiningUserInteraction OnDefiningUserInteraction;
 
+    public delegate void PauseAction();
+    public static event PauseAction OnPauseAction;
+
+    public enum MachineState {
+        paused,
+        resume
+    }
+
     [SerializeField]
     Vector3 cameraPosition;
     [SerializeField]
     Vector3 cameraRotation;
 
-    Camera mainCamera;
+    Camera mainCamera;    
+    MachineState gameState;
+
+    public void SetResumeGameState() {
+        gameState = MachineState.resume;
+    }
 
     public static GameController instance;
-    
+
     public static GameController Instance {
         get { return instance; }
     }
@@ -36,8 +49,18 @@ public class GameController : MonoBehaviour {
     }
 
     void Awake() {
+        gameState = MachineState.resume;    
         instance = this;
         SetCameraPosition();
+    }
+
+
+    void Update() {
+        if(Input.GetKeyDown(KeyCode.P)){
+            if (gameState == MachineState.paused) return;
+            gameState = MachineState.paused;
+            if (OnPauseAction != null) OnPauseAction();
+        }
     }
 
     void SetCameraPosition() {

@@ -18,7 +18,7 @@ public class DataCharactersModule : ScriptableObject {
 
 [System.Serializable]
 public struct CharacterDictionary {
-
+    
     public enum CharacterType {
         gemmini,
         aquarius
