@@ -6,11 +6,11 @@ using System;
 
 public class PlayerModule : ScriptableObject {
     [SerializeField]
-    List<Player> levels;    
+    Player player;    
 
-    internal List<Player> Levels {
+    public Player Player {
         get { 
-            return levels;
+            return player;
         }
     }
 }

@@ -4,8 +4,11 @@ using Common.Layout;
 
 public class DuelController : MonoBehaviour {
 
-    public delegate List<Player> DefinedPlayers();
-    public static event DefinedPlayers OnDefinedPlayers;
+    public delegate LevelData DefineOthersPlayers();
+    public static event DefineOthersPlayers OnDefineOthersPlayers;
+
+    public delegate Player DefinePlayer();
+    public static event DefinePlayer OnDefinePlayer;
 
     public delegate void PopupTurn(int turnNumber, Player currentPlayer, bool isNextTurn);
     public static event PopupTurn OnPopupTurn;
@@ -18,13 +21,22 @@ public class DuelController : MonoBehaviour {
     const int INIT_NEXT_COUNTER = 0;
     int turnCounter;
     int nextTurnCounter;
-    List<Player> players;
 
-    public List<Player> Players {
+    LevelData level;
+    Player playerHuman;
+    List<Player> playerList;
+
+    public LevelData Level {
         get {
-            return players;
+            return level;
         }
     }
+    public Player PlayerHuman {
+        get {
+            return playerHuman;
+        }
+    }
+
     public static DuelController instance;
 
     public static DuelController Instance {
@@ -32,12 +44,14 @@ public class DuelController : MonoBehaviour {
     }
 
     void GetCurrentPlayers() {
-        if (OnDefinedPlayers != null) players = OnDefinedPlayers();        
+        if (OnDefineOthersPlayers != null) level = OnDefineOthersPlayers();
+        if (OnDefinePlayer != null) playerHuman = OnDefinePlayer();        
 
-        if (players == null) Debug.LogError("Don't have players");        
+        if (level == null || playerHuman == null) Debug.LogError("Don't have players");        
     }
 
-    void Awake() {
+    void Awake() {        
+        playerList = new List<Player>();
         instance = this;
         CampaingUIController.OnDefiningPlayers += DefineLevel;
         Character.OnRemoveCharacter += RemoveCharacter;
@@ -57,18 +71,28 @@ public class DuelController : MonoBehaviour {
         return currentPlayer;
     }
 
-    void DefineLevel(List<Vector2> elements) {
-        Player humanPlayer = players.Find(x => x.Type == Player.TypePlayer.human);
-        humanPlayer.SetLimitElements(elements);        
-        
-        foreach (var player in players) {            
+    void DefineLevel(List<Vector2> elements) {        
+        foreach (var player in playerList) {
+            if(player.Type == Player.TypePlayer.human) {
+                playerHuman.SetLimitElements(elements);
+            }            
             player.DefineCharacters(charactersSet);
-        }       
+        }
+    }
+
+    void AddPlayersList() {       
+        playerList.Add(playerHuman);
+
+        foreach (var player in level.Players) {
+            playerList.Add(player);            
+        }
     }
 
     void Start() {
         GetCurrentPlayers();
-        currentPlayer = players[nextTurnCounter];
+        AddPlayersList();
+
+        currentPlayer = playerList[nextTurnCounter];
         turnCounter = INIT_COUNTER;
         nextTurnCounter = INIT_NEXT_COUNTER;
 
@@ -79,18 +103,18 @@ public class DuelController : MonoBehaviour {
         nextTurnCounter++;
         var auxNextTorn = turnCounter;
         
-        if (nextTurnCounter >= players.Count) {
+        if (nextTurnCounter >= playerList.Count) {
             turnCounter++;
             nextTurnCounter = INIT_NEXT_COUNTER;
             ClearMovements();           
         }
-        currentPlayer = players[nextTurnCounter];
+        currentPlayer = playerList[nextTurnCounter];
         
         if (OnPopupTurn != null) OnPopupTurn(turnCounter, currentPlayer, auxNextTorn != turnCounter);
     }
 
     void ClearMovements() {
-        foreach(var player in players) {
+        foreach(var player in playerList) {
             foreach(var character in player.ListCharacters) {               
                 character.SetCharacterMovement(true);
             }
@@ -98,7 +122,7 @@ public class DuelController : MonoBehaviour {
     }
 
     internal void RemoveCharacter(Character currentCharacter) {
-        foreach (var item in players) {
+        foreach (var item in playerList) {
             if (item.RemoveCharacter(currentCharacter)) {
                 break;
             }

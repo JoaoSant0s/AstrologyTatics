@@ -32,7 +32,7 @@ public class CampaingUIController : MonoBehaviour {
     }
 
     void InitSliderScrollbar() {
-        Player player = DuelController.Instance.Players.Find(x => x.Type == Player.TypePlayer.human);        
+        Player player = DuelController.Instance.PlayerHuman;        
         CharacterDictionary.CharacterType [] listType = (CharacterDictionary.CharacterType []) Enum.GetValues(typeof(CharacterDictionary.CharacterType));
 
         foreach(var type in listType) {            

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
+using System.Collections;
 
 public class PlayerData : MonoBehaviour {
 
@@ -7,16 +7,15 @@ public class PlayerData : MonoBehaviour {
     PlayerModule module;
 
     void Awake() {
-        DuelController.OnDefinedPlayers += GetPlayers;
+        DuelController.OnDefinePlayer += GetPlayer;
     }
 
 
     void OnDestroy() {
-        DuelController.OnDefinedPlayers -= GetPlayers;
+        DuelController.OnDefinePlayer -= GetPlayer;
     }
 
-    List<Player> GetPlayers() {
-        return module.Levels;
-    }    
-
+    Player GetPlayer() {
+        return module.Player;
+    }
 }
