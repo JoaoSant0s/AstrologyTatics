@@ -71,12 +71,19 @@ public class DuelController : MonoBehaviour {
         return currentPlayer;
     }
 
-    void DefineLevel(List<Vector2> elements) {        
+    void DefineLevel(List<Vector2> elements) {
+        DestroyCharacterGameObjects();
         foreach (var player in playerList) {
             if(player.Type == Player.TypePlayer.human) {
                 playerHuman.SetLimitElements(elements);
             }            
             player.DefineCharacters(charactersSet);
+        }
+    }
+
+    void DestroyCharacterGameObjects() {
+        for(var cont = 0; cont < charactersSet.transform.childCount; cont++) {
+            DestroyObject(charactersSet.transform.GetChild(cont).gameObject);
         }
     }
 
