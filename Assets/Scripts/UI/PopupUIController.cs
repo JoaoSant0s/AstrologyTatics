@@ -9,13 +9,17 @@ public class PopupUIController : MonoBehaviour {
     [SerializeField]
     TurnUIController turnUIController;
 
+    [SerializeField]
+    FeedbackUIController feedbackUIController;
+
     void Awake() {
         DuelController.OnPopupTurn += PopDefinition;
+        DuelController.OnVictoryPopup += PopupVictory;
     }
-
 
     void OnDestroy() {
         DuelController.OnPopupTurn -= PopDefinition;
+        DuelController.OnVictoryPopup -= PopupVictory;
     }
 
     void PopDefinition(int turnNumber, Player currentPlayer, bool isNextTurn) {
@@ -25,6 +29,10 @@ public class PopupUIController : MonoBehaviour {
         } else {
             StartCoroutine(TurnCourotine(turnNumber, currentPlayer.Name));
         }
+    }
+
+    void PopupVictory(bool victory) {
+        feedbackUIController.gameObject.SetActive(true);
     }
 
     IEnumerator NextTurnCourotine(int turnNumber, string playerName) {

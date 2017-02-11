@@ -13,6 +13,10 @@ public class DuelController : MonoBehaviour {
     public delegate void PopupTurn(int turnNumber, Player currentPlayer, bool isNextTurn);
     public static event PopupTurn OnPopupTurn;
 
+    public delegate void VictoryEvent(bool victory);
+    public static event VictoryEvent OnVictoryEvent;
+    public static event VictoryEvent OnVictoryPopup;
+
     [SerializeField]
     GameObject charactersSet;
 
@@ -74,7 +78,7 @@ public class DuelController : MonoBehaviour {
     void DefineLevel(List<Vector2> elements) {
         DestroyCharacterGameObjects();
         foreach (var player in playerList) {
-            if(player.Type == Player.TypePlayer.human) {
+            if(player.Type == Player.TypePlayer.human) {                
                 playerHuman.SetLimitElements(elements);
             }            
             player.DefineCharacters(charactersSet);
@@ -128,12 +132,41 @@ public class DuelController : MonoBehaviour {
         }
     }
 
-    internal void RemoveCharacter(Character currentCharacter) {
-        foreach (var item in playerList) {
-            if (item.RemoveCharacter(currentCharacter)) {
+    public void RemoveCharacter(Character currentCharacter) {
+        foreach (var auxPlayer in playerList) {
+            if (auxPlayer.RemoveCharacter(currentCharacter)) {
+                RemovePlayer(auxPlayer);
                 break;
             }
         }        
         GameObject.DestroyObject(currentCharacter.gameObject);
+    }
+
+    void RemovePlayer(Player auxPlayer) {
+        if (auxPlayer.IsCharacterListEmpty()) {
+            playerList.Remove(auxPlayer);
+            nextTurnCounter--;
+            VerifyVictory();
+        }
+    }
+
+    private void VerifyVictory() {
+        if (OnVictoryEvent != null || OnVictoryPopup != null) {
+            var human = playerList.Find(x => x.Type == Player.TypePlayer.human);
+            var machine = playerList.Find(x => x.Type == Player.TypePlayer.machine);
+
+            if (human == null) {
+                OnVictoryPopup(false);
+                GameController.Instance.UserInteraction(false);
+                OnVictoryEvent(false);
+            }else if (machine == null) {
+                OnVictoryPopup(true);
+                GameController.Instance.UserInteraction(false);
+                OnVictoryEvent(true);
+            }
+
+
+        }
+            
     }
 }

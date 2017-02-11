@@ -57,7 +57,11 @@ public class CampaingUIController : MonoBehaviour {
 
     void actionStart() {
         UpdateSliderValues();
-        gameObject.SetActive(false);  
+        gameObject.SetActive(false);
+        Debug.Log("Slider Elements");
+        foreach (var item in sliderElement) {
+            Debug.Log(item);
+        }
         if (OnDefiningPlayers != null) OnDefiningPlayers(sliderElement);
     }
 

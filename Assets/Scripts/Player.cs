@@ -65,20 +65,19 @@ public class Player {
 
     public void DefineCharacters(GameObject charactersSet) {
         listCharacters = new List<Character>();
-        turnNumberController = 1;
-
-        Debug.Log(elementsSelected.Count);
+        turnNumberController = 1;        
 
         foreach (var auxCharacter in listCharactersData) {
             
             if (elementsSelected.Count > 0) {
                 var auxCharac = elementsSelected.Find(element => element.x == (int)auxCharacter.Type);
-                elementsSelected.Remove(auxCharac);
-                Debug.Log(auxCharac);
-                if (auxCharac.y <= 0) continue;
+                elementsSelected.Remove(auxCharac);    
+                var continueCharacter = auxCharac.y <= 0;
                 auxCharac -= (new Vector2(0, 1));
                 elementsSelected.Add(auxCharac);
+                if (continueCharacter) continue;
             }
+            
             var characterData = DataCharactersData.Instance.CharacterPrefab(auxCharacter.Type);
 
             Vector3 position = LayoutDefinition.ConvertPostion(auxCharacter.Position);
@@ -100,13 +99,16 @@ public class Player {
    
 
     public void NextMovement() {
-        Debug.Log(listCharacters.Count);      
         if (turnNumberController >= listCharacters.Count) {
             turnNumberController = 1;
             if (OnUpdateTurn != null) OnUpdateTurn();
         } else {
             turnNumberController++;
         }        
+    }
+
+    public bool IsCharacterListEmpty() {
+        return listCharacters.Count == 0;
     }
 
     public bool RemoveCharacter(Character currentCharacter) {
